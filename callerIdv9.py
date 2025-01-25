@@ -10,7 +10,7 @@ def CallerIDEvent(DeviceSerial, Line, PhoneNumber, DateTime, Other):
     CallerIDEvent.counter += 1
     print(f"CallerID: {PhoneNumber}   DateTime: {DateTime}   Line: {Line}   Counter: {CallerIDEvent.counter}")
 
-CallerIDEvent.counter = 0 # arama counter'ını sıfırla
+CallerIDEvent.counter = 0
 
 @SignalFuncType
 def SignalEvent(DeviceModel, DeviceSerial, Signal1, Signal2, Signal3, Signal4):
@@ -30,11 +30,13 @@ SetEventsFuncType = ctypes.CFUNCTYPE(None, CallerIDFuncType, SignalFuncType)
 def main():
     print("\n\n***************** CIDSHOW Caller ID *****************\n\n\n")
 
+    
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
     if struct.calcsize("P") * 8 == 64:
-        dll_path = os.path.join(os.getcwd(), "./cidshow_x64/cid.dll")
+        dll_path = os.path.join(script_dir, "./cidshow_x64/cid.dll")
     else:
-        dll_path = os.path.join(os.getcwd(), "./cidshow_x86/cid.dll")
+        dll_path = os.path.join(script_dir, "./cidshow_x86/cid.dll")
 
     try:
         cid_dll = ctypes.CDLL(dll_path)
@@ -44,7 +46,6 @@ def main():
         input()
         return
 
-    # Get the SetEvents function from the DLL
     try:
         SetEvents = SetEventsFuncType(("SetEvents", cid_dll))
     except AttributeError:
@@ -53,16 +54,15 @@ def main():
         input()
         return
 
-    # Set the events
+
     SetEvents(CallerIDEvent, SignalEvent)
 
-    # Check if softtest.txt file exists
+
     if os.path.isfile("softtest.txt"):
         print("Softtest enabled.")
 
     print("Ready for test call..\n")
 
-    # Wait for a key press
     input()
 
 if __name__ == "__main__":

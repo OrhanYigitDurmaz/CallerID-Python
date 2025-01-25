@@ -1,0 +1,14 @@
+
+
+When 
+softtest.txt 
+available in application folder,
+periodically virtual call generated.
+
+
+rename 
+_softtest.txt
+ to 
+softtest.txt
+
+and restart Test_x64_x86.exe
